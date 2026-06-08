@@ -1,21 +1,31 @@
+import { CONFIG } from "../lib/clients/basis-datum";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Servicos from "../components/Servicos";
 import Sobre from "../components/Sobre";
 import Contato from "../components/Contato";
 import Footer from "../components/Footer";
+import SiteShell from "../components/SiteShell";
+
+export function generateMetadata() {
+  return {
+    title: CONFIG.nome,
+    description: CONFIG.hero.subtitulo,
+    openGraph: { title: CONFIG.nome, description: CONFIG.hero.subtitulo, type: "website" },
+  };
+}
 
 export default function Home() {
   return (
-    <>
-      <Navbar />
+    <SiteShell config={CONFIG}>
+      <Navbar config={CONFIG} />
       <main>
-        <Hero />
-        <Servicos />
-        <Sobre />
-        <Contato />
+        <Hero config={CONFIG} />
+        <Servicos config={CONFIG} />
+        <Sobre config={CONFIG} />
+        <Contato config={CONFIG} />
       </main>
-      <Footer />
-    </>
+      <Footer config={CONFIG} />
+    </SiteShell>
   );
 }

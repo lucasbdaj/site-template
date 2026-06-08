@@ -1,8 +1,6 @@
-import { CONFIG } from "../lib/config";
+export default function Navbar({ config }) {
+  const wppUrl = `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp)}`;
 
-const wppUrl = `https://wa.me/55${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.mensagemWhatsapp)}`;
-
-export default function Navbar() {
   return (
     <header style={{
       position: "sticky",
@@ -24,11 +22,11 @@ export default function Navbar() {
 
         {/* Logo ou nome */}
         <a href="#" style={{ textDecoration: "none", flexShrink: 0 }}>
-          {CONFIG.logo ? (
-            <img src={CONFIG.logo} alt={CONFIG.nome} style={{ height: 40, objectFit: "contain" }} />
+          {config.logo ? (
+            <img src={config.logo} alt={config.nome} style={{ height: 40, objectFit: "contain" }} />
           ) : (
             <span style={{ fontSize: 20, fontWeight: 700, color: "var(--primary)" }}>
-              {CONFIG.nome}
+              {config.nome}
             </span>
           )}
         </a>

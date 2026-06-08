@@ -1,9 +1,6 @@
-import { CONFIG } from "../lib/config";
-
-const wppUrl = `https://wa.me/55${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.mensagemWhatsapp)}`;
-
-export default function Contato() {
-  const temMapa = !!CONFIG.googleMapsEmbed;
+export default function Contato({ config }) {
+  const wppUrl = `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp)}`;
+  const temMapa = !!config.googleMapsEmbed;
 
   return (
     <section
@@ -75,7 +72,7 @@ export default function Contato() {
               </div>
               <div>
                 <p style={{ fontSize: 12, opacity: 0.7, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Endereço</p>
-                <p style={{ fontSize: 15, lineHeight: 1.5 }}>{CONFIG.endereco}</p>
+                <p style={{ fontSize: 15, lineHeight: 1.5 }}>{config.endereco}</p>
               </div>
             </div>
 
@@ -93,14 +90,14 @@ export default function Contato() {
               </div>
               <div>
                 <p style={{ fontSize: 12, opacity: 0.7, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>Horário</p>
-                {CONFIG.horario.map((h, i) => (
+                {config.horario.map((h, i) => (
                   <p key={i} style={{ fontSize: 15, lineHeight: 1.6 }}>{h}</p>
                 ))}
               </div>
             </div>
 
             {/* WhatsApp */}
-            {CONFIG.whatsapp && (
+            {config.whatsapp && (
               <div style={{ display: "flex", gap: 16, marginBottom: 28, alignItems: "flex-start" }}>
                 <div style={{
                   width: 44, height: 44, borderRadius: 12,
@@ -115,14 +112,14 @@ export default function Contato() {
                 <div>
                   <p style={{ fontSize: 12, opacity: 0.7, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>WhatsApp</p>
                   <a href={wppUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>
-                    {CONFIG.whatsapp}
+                    {config.whatsapp}
                   </a>
                 </div>
               </div>
             )}
 
             {/* Email */}
-            {CONFIG.email && (
+            {config.email && (
               <div style={{ display: "flex", gap: 16, marginBottom: 28, alignItems: "flex-start" }}>
                 <div style={{
                   width: 44, height: 44, borderRadius: 12,
@@ -136,8 +133,8 @@ export default function Contato() {
                 </div>
                 <div>
                   <p style={{ fontSize: 12, opacity: 0.7, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>E-mail</p>
-                  <a href={`mailto:${CONFIG.email}`} style={{ fontSize: 15, color: "white", textDecoration: "none" }}>
-                    {CONFIG.email}
+                  <a href={`mailto:${config.email}`} style={{ fontSize: 15, color: "white", textDecoration: "none" }}>
+                    {config.email}
                   </a>
                 </div>
               </div>
@@ -180,7 +177,7 @@ export default function Contato() {
               aspectRatio: "1 / 1",
             }}>
               <iframe
-                src={CONFIG.googleMapsEmbed}
+                src={config.googleMapsEmbed}
                 width="100%"
                 height="100%"
                 style={{ border: 0, display: "block" }}

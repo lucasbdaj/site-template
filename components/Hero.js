@@ -1,9 +1,6 @@
-import { CONFIG } from "../lib/config";
-
-const wppUrl = `https://wa.me/55${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.mensagemWhatsapp)}`;
-
-export default function Hero() {
-  const { titulo, subtitulo, cta, imagemFundo } = CONFIG.hero;
+export default function Hero({ config }) {
+  const wppUrl = `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp)}`;
+  const { titulo, subtitulo, cta, imagemFundo } = config.hero;
 
   const bgStyle = imagemFundo
     ? {

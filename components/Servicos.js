@@ -1,13 +1,10 @@
-import { CONFIG } from "../lib/config";
-
-export default function Servicos() {
-  const { titulo, itens } = CONFIG.servicos;
+export default function Servicos({ config }) {
+  const { titulo, itens } = config.servicos;
 
   return (
     <section id="servicos" style={{ background: "#f9fafb", padding: "96px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-        {/* Cabeçalho da seção */}
         <div style={{ textAlign: "center", marginBottom: 64 }}>
           <span style={{
             display: "inline-block",
@@ -33,7 +30,6 @@ export default function Servicos() {
           </h2>
         </div>
 
-        {/* Grid de cards */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
