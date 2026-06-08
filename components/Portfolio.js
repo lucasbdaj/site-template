@@ -6,6 +6,13 @@ const clientes = [
     cor: "#1E4ED8",
     icone: "🪑",
   },
+  {
+    slug: "sb-ar-condicionado",
+    nome: "SB Ar Condicionado",
+    descricao: "Especialistas em ar condicionado automotivo e direção hidráulica em Bauru.",
+    cor: "#4D1817",
+    icone: "❄️",
+  },
 ];
 
 export default function Portfolio() {
