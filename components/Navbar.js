@@ -23,7 +23,7 @@ export default function Navbar({ config }) {
         {/* Logo ou nome */}
         <a href="#" style={{ textDecoration: "none", flexShrink: 0 }}>
           {config.logo ? (
-            <img src={config.logo} alt={config.nome} style={{ height: 40, objectFit: "contain" }} />
+            <img src={config.logo} alt={config.nome} style={{ height: 56, objectFit: "contain" }} />
           ) : (
             <span style={{ fontSize: 20, fontWeight: 700, color: "var(--primary)" }}>
               {config.nome}

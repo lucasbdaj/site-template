@@ -1,7 +1,7 @@
-import { CONFIG } from "../lib/config";
+import ImagemLightbox from "./ImagemLightbox";
 
-export default function Sobre() {
-  const { titulo, texto, foto, numeros } = CONFIG.sobre;
+export default function Sobre({ config }) {
+  const { titulo, texto, foto, numeros } = config.sobre;
 
   return (
     <section id="sobre" style={{ background: "white", padding: "96px 24px" }}>
@@ -29,7 +29,7 @@ export default function Sobre() {
               borderRadius: 20,
               marginBottom: 20,
             }}>
-              Nossa história
+              Quem somos
             </span>
 
             <h2 style={{
@@ -91,18 +91,7 @@ export default function Sobre() {
                 borderRadius: 20,
                 opacity: 0.08,
               }} />
-              <img
-                src={foto}
-                alt={`Foto ${titulo}`}
-                style={{
-                  width: "100%",
-                  borderRadius: 16,
-                  objectFit: "cover",
-                  aspectRatio: "4/3",
-                  position: "relative",
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-                }}
-              />
+              <ImagemLightbox src={foto} alt={`Foto ${titulo}`} />
             </div>
           )}
         </div>
