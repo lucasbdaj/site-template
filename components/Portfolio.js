@@ -13,6 +13,13 @@ const clientes = [
     cor: "#4D1817",
     icone: "❄️",
   },
+  {
+    slug: "rs-detail",
+    nome: "RS Detail",
+    descricao: "Estética automotiva profissional em Bauru. Polimento, higienização e proteção.",
+    cor: "#A32121",
+    icone: "✨",
+  },
 ];
 
 export default function Portfolio() {
