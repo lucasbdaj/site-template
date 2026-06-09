@@ -24,8 +24,15 @@ const clientes = [
     slug: "f2-premium",
     nome: "F2 Premium Autopeças",
     descricao: "Especialistas em autopeças para nacionais e importados. Mais de 10 anos em Bauru.",
-    cor: "#0A2647",
+    cor: "#F31621",
     icone: "🏅",
+  },
+  {
+    slug: "funilaria-do-beco",
+    nome: "Funilaria do Beco",
+    descricao: "Funilaria e pintura automotiva profissional no Parque Santa Edwiges, Bauru.",
+    cor: "#1C1C1C",
+    icone: "🔨",
   },
 ];
 
