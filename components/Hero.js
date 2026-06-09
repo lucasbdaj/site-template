@@ -1,5 +1,9 @@
 export default function Hero({ config }) {
-  const wppUrl = `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp)}`;
+  const ctaHref = config.whatsapp
+    ? `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp)}`
+    : config.telefone
+      ? `tel:${config.telefone}`
+      : "#contato";
   const { titulo, subtitulo, cta, imagemFundo } = config.hero;
 
   const bgStyle = imagemFundo
@@ -49,8 +53,8 @@ export default function Hero({ config }) {
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
           <a
-            href={wppUrl}
-            target="_blank"
+            href={ctaHref}
+            target={config.whatsapp ? "_blank" : "_self"}
             rel="noopener noreferrer"
             style={{
               display: "inline-flex",

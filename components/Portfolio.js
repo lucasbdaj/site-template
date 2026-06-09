@@ -20,6 +20,13 @@ const clientes = [
     cor: "#A32121",
     icone: "✨",
   },
+  {
+    slug: "f2-premium",
+    nome: "F2 Premium Autopeças",
+    descricao: "Especialistas em autopeças para nacionais e importados. Mais de 10 anos em Bauru.",
+    cor: "#0A2647",
+    icone: "🏅",
+  },
 ];
 
 export default function Portfolio() {
