@@ -21,7 +21,7 @@ export default function Navbar({ config }) {
     : config.telefone
       ? `tel:${config.telefone}`
       : "#contato";
-  const ctaTarget = config.whatsapp ? "_blank" : "_self";
+  const ctaTarget = "_self";
   const ctaLabel = config.whatsapp ? "WhatsApp" : config.telefone ? "Ligar" : "Contato";
 
   const ctaBase = {

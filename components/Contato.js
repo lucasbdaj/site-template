@@ -87,7 +87,7 @@ export default function Contato({ config }) {
                 </div>
                 <div>
                   <p style={{ fontSize: 11, opacity: 0.7, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>WhatsApp</p>
-                  <a href={ctaHref} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: "white", textDecoration: "none" }}>
+                  <a href={ctaHref} style={{ fontSize: 14, color: "white", textDecoration: "none" }}>
                     {config.whatsapp}
                   </a>
                 </div>
@@ -164,7 +164,7 @@ export default function Contato({ config }) {
             {/* CTA */}
             <a
               href={ctaHref}
-              target={config.whatsapp ? "_blank" : "_self"}
+              target="_self"
               rel="noopener noreferrer"
               style={{
                 display: "flex",

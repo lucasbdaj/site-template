@@ -54,7 +54,7 @@ export default function Hero({ config }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
           <a
             href={ctaHref}
-            target={config.whatsapp ? "_blank" : "_self"}
+            target="_self"
             rel="noopener noreferrer"
             style={{
               display: "inline-flex",
