@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const HORARIO_PADRAO = [
   { dia: "Segunda a Sexta", horario: "" },
@@ -24,11 +24,14 @@ const estiloTituloSecao = { fontSize: 17, fontWeight: 700, color: "#1a2e4a", mar
 
 export default function FormOrcamento() {
   const [form, setForm] = useState({
-    razao_social: "", nome_fantasia: "", cnpj_cpf: "", segmento: "", descricao: "",
+    razao_social: "", nome_fantasia: "", cnpj_cpf: "", descricao: "",
     responsavel: "", telefone: "", whatsapp: "", email: "", endereco: "",
     instagram: "", facebook: "", linkedin: "", tiktok: "", youtube: "",
     site_atual: "", dominio: "", plano: "", informacoes_adicionais: "", website: "",
   });
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
+  const [segmentoOutro, setSegmentoOutro] = useState("");
   const [possuiDominio, setPossuiDominio] = useState(null);
   const [temInteresseDominio, setTemInteresseDominio] = useState(null);
   const [horario, setHorario] = useState(HORARIO_PADRAO);
@@ -39,6 +42,21 @@ export default function FormOrcamento() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState("");
   const [enviado, setEnviado] = useState(false);
+
+  useEffect(() => {
+    fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/categorias?select=nome&order=nome`,
+      {
+        headers: {
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+        },
+      }
+    )
+      .then(r => (r.ok ? r.json() : []))
+      .then(data => setCategorias(data.map(c => c.nome)))
+      .catch(() => setCategorias([]));
+  }, []);
 
   function atualizar(e) {
     const { name, value } = e.target;
@@ -86,6 +104,7 @@ export default function FormOrcamento() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          segmento: categoriaSelecionada === "outra" ? segmentoOutro.trim() : categoriaSelecionada,
           horario: horario.filter(h => h.dia.trim() && h.horario.trim()),
           servicos_oferecidos: servicos,
           diferenciais,
@@ -171,8 +190,33 @@ export default function FormOrcamento() {
             {input("Nome comercial (fantasia)", "nome_fantasia", "text", false, "Ex: Auto Peças Bauru")}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }} className="grid-2">
               {input("CNPJ ou CPF", "cnpj_cpf")}
-              {input("Ramo do negócio", "segmento", "text", false, "Ex: oficina, salão, restaurante")}
+              <div>
+                <label style={estiloLabel}>Ramo do negócio</label>
+                <select
+                  value={categoriaSelecionada}
+                  onChange={e => setCategoriaSelecionada(e.target.value)}
+                  style={{ ...estiloInput, background: "white" }}
+                >
+                  <option value="">Selecione...</option>
+                  {categorias.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                  <option value="outra">Outra</option>
+                </select>
+              </div>
             </div>
+            {categoriaSelecionada === "outra" && (
+              <div>
+                <label style={estiloLabel}>Qual ramo?</label>
+                <input
+                  type="text"
+                  value={segmentoOutro}
+                  onChange={e => setSegmentoOutro(e.target.value)}
+                  placeholder="Descreva o ramo do seu negócio"
+                  style={estiloInput}
+                />
+              </div>
+            )}
             <div>
               <label style={estiloLabel}>Descrição do negócio</label>
               <textarea
