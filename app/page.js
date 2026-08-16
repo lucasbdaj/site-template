@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import SiteShell from "../components/SiteShell";
 import Portfolio from "../components/Portfolio";
 import CTAOrcamento from "../components/CTAOrcamento";
+import CTABauruServicos from "../components/CTABauruServicos";
 
 export function generateMetadata() {
   return {
@@ -24,6 +25,7 @@ export default function Home() {
       <main>
         <Hero config={CONFIG} />
         <Servicos config={CONFIG} />
+        <CTABauruServicos />
         <Sobre config={CONFIG} />
         <Portfolio />
         <CTAOrcamento />
