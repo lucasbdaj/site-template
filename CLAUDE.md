@@ -7,6 +7,8 @@ Dois papéis nesse repositório:
 1. **Template multi-tenant** de landing page para clientes da **Basis Datum Services** (sub-empresa focada em presença digital para pequenas empresas locais de Bauru/SP) — cada cliente é um arquivo de config em `lib/clients/*.js`, renderizado em `/[slug]`.
 2. **Site de vendas da própria Basis Datum Services**, servido na raiz (`/`) usando `lib/clients/basis-datum.js` como config — é o site institucional que capta os leads que depois viram clientes do item 1.
 
+> **Basis Datum Services é uma sub-empresa nascida dentro do ecossistema Basis Datum, com proposta própria**: presença digital (Perfil da Empresa no Google + site) pro pequeno comércio local. Não confundir com a Basis Datum "mãe" (dona do ecossistema Bauru Empregos/Bauru Serviços/Posto Certo) — ver `documentação/` pra escopo comercial completo.
+
 ## Stack
 
 - **Next.js 16** (App Router, JavaScript puro), React 19, Tailwind CSS 4 (pouco usado — a maioria dos componentes usa `style={{}}` inline)
@@ -23,10 +25,14 @@ app/
   orcamento/page.js         # Formulário de briefing (leva o visitante a virar lead)
   api/lead/route.js         # POST — grava o briefing na tabela clientes do bd-crm (não numa tabela própria)
 components/
-  Navbar, Hero, Servicos, Sobre, Contato, Footer, SiteShell  # genéricos — usados por TODOS os clientes,
-                                                              # renderizados a partir do config recebido via prop.
-                                                              # Nunca hardcode algo específico da Basis Datum
-                                                              # Services aqui — só em componentes dedicados.
+  Navbar, Hero, Servicos, Sobre, Contato, Footer, SiteShell   # genéricos — usados pelos sites de CLIENTE
+                                                               # (/[slug]), renderizados a partir do config
+                                                               # recebido via prop. Nunca hardcode algo
+                                                               # específico da Basis Datum Services aqui.
+  HeroBasisDatum, ServicosBasisDatum, SobreBasisDatum,
+  ContatoBasisDatum                                           # equivalentes dedicados, só usados em
+                                                               # app/page.js (a home institucional) — têm
+                                                               # identidade visual própria (ver seção abaixo)
   Portfolio.js               # Lista os 5 cases reais (exceto basis-datum) — só usado na home
   CTAOrcamento.js            # Banner "Quero meu orçamento" → /orcamento — só usado na home
   CTABauruServicos.js        # Banner cruzado → bauruservicos.com.br/cadastro — só usado na home
@@ -35,17 +41,60 @@ lib/
   config.js                 # "Molde" comentado — copiar pra criar um cliente novo
   clients/*.js               # Um arquivo por cliente (basis-datum, funilaria-do-beco, f2-premium,
                               # rs-detail, saldao-dos-moveis, sb-ar-condicionado)
+documentação/
+  PLANO DE NEGÓCIO_V2.docx                                    # fonte da verdade do modelo de negócio
+  CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE PRESENÇA DIGITAL V2.docx  # contrato padrão usado com clientes
 ```
 
-**Regra importante:** `Navbar`, `Hero`, `Contato` etc. são compartilhados por todos os clientes do template. Qualquer coisa específica da Basis Datum Services (como os banners de CTA) deve virar um componente próprio usado só em `app/page.js`, nunca alterar os genéricos.
+**Regra importante:** `Navbar`, `Servicos`, `Sobre`, `Contato` etc. (os genéricos) são compartilhados por todos os clientes do template — servem `/[slug]`. Qualquer coisa específica da Basis Datum Services (visual ou de conteúdo, como os banners de CTA e o hero/serviços/sobre/contato da home) vira um componente próprio (sufixo `BasisDatum` ou dedicado, como `Portfolio.js`/`CTAOrcamento.js`) usado só em `app/page.js`, nunca alterando os genéricos.
+
+## Identidade visual da home (Basis Datum Services)
+
+A partir de 2026-08-17 a home (`app/page.js`) tem um sistema visual próprio, diferente do template genérico usado pelos clientes:
+
+- **Tipografia**: eyebrow em monospace (`ui-monospace, 'Cascadia Code', 'SF Mono', Consolas`) tipo `// serviços`, títulos em serif (`ui-serif, 'Iowan Old Style', 'Palatino Linotype', Georgia`), corpo em sans padrão. Declarado inline em cada componente `*BasisDatum.js` — não existe um token/CSS var pra isso ainda, então ao criar um novo componente da home é preciso repetir as mesmas font stacks (comparar com um `*BasisDatum.js` existente).
+- **Paleta**: `var(--primary)` (cyan `#00aadd`) e `var(--primary-dark)` (navy `#1a2e4a`), as mesmas CSS vars que o template genérico já usa — só a composição (cards mais enxutos, chips de ícone, blobs radiais de destaque no Hero e no Contato) é diferente.
+- **Padrão de card**: ícone num chip 44×44 arredondado (cor de fundo tintada), título serif, descrição em cinza-azulado (`#5b6b7c`), sem barra colorida no topo — usado em `ServicosBasisDatum`, `SobreBasisDatum` (painel de números) e `Portfolio`.
+- **Footer permanece genérico** (`Footer.js`) — decisão consciente do dono do produto: já se encaixa bem, não precisa de tratamento dedicado só por consistência com o resto.
 
 ## Formulário de briefing (`/orcamento`)
 
 - Coleta os mesmos campos que `lib/clients/*.js` espera (identidade, contato, redes sociais, horário, serviços, diferenciais, domínio) — o objetivo é que preencher esse formulário gere quase diretamente o `CONFIG.js` de um cliente novo.
 - **"Ramo do negócio"** busca as categorias reais do `bauru-servicos` (tabela `categorias`, mesmo Supabase compartilhado) em tempo real via fetch direto na API do Supabase — não hardcoded, então acompanha automaticamente se a lista mudar lá. Tem opção "Outra" com campo de texto livre.
 - Grava direto na tabela **`clientes` do bd-crm** (não uma tabela própria do site-template), com `origem: "site-template"`, via `app/api/lead/route.js` usando `SUPABASE_SERVICE_ROLE_KEY` — nunca client-side, porque a política de RLS de `clientes` libera qualquer usuário autenticado do ecossistema (ver nota de segurança no `CLAUDE.md` do bd-crm).
-- **Preços foram deixados de fora do formulário de propósito** — o plano de negócio ainda tem uma inconsistência de preço do Produto 01 (R$ 297 vs R$ 397 em seções diferentes) que não foi resolvida.
+- **Preços foram deixados de fora do formulário de propósito** — mesmo já estando definidos e consistentes no plano de negócio (ver seção "Documentação de negócio" abaixo), a decisão de não exibir preço publicamente segue de pé por enquanto.
 - Sem upload de foto/logo real — decisão consciente para entregar mais rápido. Os campos `fotos`/`logotipo_url` existem na tabela `clientes` pra uso futuro, mas fotos/logo continuam sendo combinados por WhatsApp/e-mail na produção do site, como já era antes.
+
+## Documentação de negócio (`documentação/`)
+
+Dois documentos, adicionados em 2026-08-17, são a fonte da verdade do modelo de negócio da Basis Datum Services — não são só referência, o **modelo de página única do template foi validado contra eles** (ver "Regra importante" e a auditoria que motivou a criação desses arquivos):
+
+- **`PLANO DE NEGÓCIO_V2.docx`** — modelo de negócio completo: proposta de valor, produtos, precificação, processo comercial, roadmap.
+- **`CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE PRESENÇA DIGITAL V2.docx`** — contrato padrão usado com clientes reais, incluindo os anexos de escopo/valores/LGPD/entrega.
+
+Ambos são `.docx` — o tool de leitura do Claude Code não abre binário diretamente; pra ler/conferir o conteúdo é preciso extrair o texto primeiro (`word/document.xml` dentro do zip do `.docx`, ver histórico da sessão de 2026-08-17 pra o script).
+
+**Estrutura do "Site Essencial" confirmada nos dois documentos e alinhada ao código atual:**
+- Página única com âncoras (`#servicos`, `#sobre`, `#contato`) — não são 5 páginas separadas.
+- **Sem galeria** por padrão (Cláusula 4.1 do contrato não lista mais "galeria" — só existe como checkbox opcional no Anexo I, pra casos específicos).
+- **"Diferenciais" é coletado no briefing mas não é exibido no site** — nem o plano nem o contrato prometem uma seção dedicada a isso na Página Inicial/Sobre.
+- **Sem formulário de contato embutido no site do cliente** — só WhatsApp/telefone/e-mail diretos + mapa, como o `Contato.js` genérico já faz.
+
+**Preços atuais (implantação):**
+| Produto | Preço |
+|---|---|
+| Perfil da Empresa no Google | R$ 297 |
+| Site Essencial | R$ 797 |
+| Pacote Presença Digital | R$ 997 |
+
+**Manutenção recorrente:**
+| Plano | Preço |
+|---|---|
+| Básico | R$ 49/mês |
+| Profissional | R$ 79/mês |
+| Presença | R$ 99/mês |
+
+> Esses preços ainda não aparecem em nenhum lugar do site (ver "Preços foram deixados de fora do formulário" acima) — se algum dia forem publicados, usar exatamente esses valores, já que agora estão consistentes entre plano e contrato.
 
 ## Variáveis de ambiente
 
@@ -68,6 +117,13 @@ SUPABASE_SERVICE_ROLE_KEY=         # obrigatório — só server-side, usado em 
 - Campo "Ramo do negócio" trocado de texto livre pra select alinhado às categorias do bauru-servicos
 - `CTABauruServicos.js`: banner cruzado linkando pro cadastro do bauru-servicos, entre Serviços e Sobre na home
 
+### 2026-08-17 — Reformulação visual da home + alinhamento com o plano de negócio
+- **Visual**: criados `HeroBasisDatum.js`, `ServicosBasisDatum.js`, `SobreBasisDatum.js`, `ContatoBasisDatum.js` (sistema mono+serif, ver "Identidade visual da home" acima); `Portfolio.js`, `CTAOrcamento.js` e `CTABauruServicos.js` (já dedicados) redesenhados no mesmo padrão. `Footer.js` genérico mantido sem alteração de propósito.
+- **CTA do Hero**: trocado de "Falar pelo WhatsApp" (destaque) para "Quero meu orçamento" → `/orcamento` (destaque); WhatsApp virou link discreto ao lado de "Ver serviços" — o objetivo agora é cadastro de lead, não conversa direta.
+- **Nomes de produto atualizados** em `lib/clients/basis-datum.js` (seção `servicos.itens`): "Google Meu Negócio" → "Perfil da Empresa no Google", "Site Profissional" → "Site Essencial", "Plataformas Digitais" → "Pacote Presença Digital" (o 3º item era sobre o ecossistema de apps, um conceito diferente — a menção ao ecossistema continua na seção Sobre).
+- **Identidade da entidade corrigida**: `CONFIG.nome` "Basis Datum" → "Basis Datum Services"; texto do "Sobre" reescrito pra deixar claro que a Services é uma empresa própria (nasceu dentro do ecossistema Basis Datum, mas com proposta específica de presença digital) — antes o texto conflava as duas entidades, inclusive atribuindo à Services o desenvolvimento do ecossistema de apps, que não é dela.
+- **`documentação/` criada** com o Plano de Negócio e o Contrato (V2), e as duas inconsistências neles encontradas durante essa auditoria (Galeria prometida por padrão no contrato mas não no plano/código; preço da manutenção "Profissional" divergente entre os dois) foram corrigidas pelo dono do produto direto nos `.docx`.
+
 ## Bugs corrigidos (histórico)
 
 ### [BUG-001] `/api/lead` retornava erro genérico de conexão em vez de mensagem clara
@@ -79,9 +135,8 @@ SUPABASE_SERVICE_ROLE_KEY=         # obrigatório — só server-side, usado em 
 
 ## Próximos passos
 
-- **Reformulação visual da home** (Basis Datum Services) — identidade mais profissional, ainda não feita.
 - **`googleMapsEmbed` vazio nos 6 clientes** em `lib/clients/*.js` — gap identificado numa auditoria anterior, nunca preenchido.
 - **Domínio próprio** — hoje só a URL da Vercel; o plano de negócio prevê `basisdatum.com.br/services` eventualmente (precisaria de rewrite no `next.config.ts` do `basis-datum`, como já existe pra bauru-empregos e posto-certo).
 - **Upload real de fotos/logo** (Supabase Storage) — adiado deliberadamente, ver seção do formulário acima.
-- **Resolver a inconsistência de preço** do Produto 01 no plano de negócio antes de publicar qualquer preço no site.
 - **`bd-crm`**: o campo `plano` do formulário usa o valor `"pacote-presenca"`, que **não existe** na lista oficial de planos do bd-crm (`avulso-lp | avulso-gmn | basico | avancado | personalizado`) — precisa ser adicionado lá pro dropdown do admin reconhecer esse valor corretamente.
+- **Publicar preços no site** — agora que estão consistentes entre plano e contrato (ver "Documentação de negócio"), é uma decisão de negócio em aberto, não mais bloqueada por inconsistência de dados.

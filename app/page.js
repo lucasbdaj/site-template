@@ -1,9 +1,9 @@
 import { CONFIG } from "../lib/clients/basis-datum";
 import Navbar from "../components/Navbar";
-import Hero from "../components/Hero";
-import Servicos from "../components/Servicos";
-import Sobre from "../components/Sobre";
-import Contato from "../components/Contato";
+import HeroBasisDatum from "../components/HeroBasisDatum";
+import ServicosBasisDatum from "../components/ServicosBasisDatum";
+import SobreBasisDatum from "../components/SobreBasisDatum";
+import ContatoBasisDatum from "../components/ContatoBasisDatum";
 import Footer from "../components/Footer";
 import SiteShell from "../components/SiteShell";
 import Portfolio from "../components/Portfolio";
@@ -23,13 +23,13 @@ export default function Home() {
     <SiteShell config={CONFIG}>
       <Navbar config={CONFIG} />
       <main>
-        <Hero config={CONFIG} />
-        <Servicos config={CONFIG} />
+        <HeroBasisDatum config={CONFIG} />
+        <ServicosBasisDatum config={CONFIG} />
         <CTABauruServicos />
-        <Sobre config={CONFIG} />
+        <SobreBasisDatum config={CONFIG} />
         <Portfolio />
         <CTAOrcamento />
-        <Contato config={CONFIG} />
+        <ContatoBasisDatum config={CONFIG} />
       </main>
       <Footer config={CONFIG} />
     </SiteShell>

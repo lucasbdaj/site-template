@@ -36,45 +36,49 @@ const clientes = [
   },
 ];
 
+function hexToRgba(hex, alpha) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export default function Portfolio() {
   if (clientes.length === 0) return null;
 
   return (
-    <section style={{ background: "#f9fafb", padding: "96px 24px" }}>
+    <section style={{ background: "#f6f9fb", padding: "104px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-        <div style={{ textAlign: "center", marginBottom: 64 }}>
-          <span style={{
-            display: "inline-block",
-            background: "var(--primary)",
-            color: "white",
-            fontSize: 12,
-            fontWeight: 700,
-            letterSpacing: "0.1em",
+        <div style={{ maxWidth: 560, marginBottom: 56 }}>
+          <p style={{
+            fontFamily: "ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace",
+            fontSize: 13,
+            letterSpacing: "0.08em",
             textTransform: "uppercase",
-            padding: "4px 14px",
-            borderRadius: 20,
-            marginBottom: 16,
+            color: "var(--primary)",
+            marginBottom: 14,
           }}>
-            Nossos clientes
-          </span>
+            // nossos clientes
+          </p>
           <h2 style={{
+            fontFamily: "ui-serif, 'Iowan Old Style', 'Palatino Linotype', Georgia, serif",
             fontSize: "clamp(26px, 3.5vw, 38px)",
-            fontWeight: 800,
-            color: "#111827",
-            letterSpacing: "-0.02em",
+            fontWeight: 600,
+            color: "var(--primary-dark)",
+            letterSpacing: "-0.01em",
+            marginBottom: 12,
           }}>
             Sites que criamos
           </h2>
-          <p style={{ fontSize: 16, color: "#6b7280", marginTop: 12 }}>
-            Veja exemplos reais de sites que desenvolvemos para negócios de Bauru
+          <p style={{ fontSize: 15.5, color: "#5b6b7c", lineHeight: 1.7 }}>
+            Exemplos reais de sites que desenvolvemos para negócios de Bauru.
           </p>
         </div>
 
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: 24,
+          gap: 20,
         }}>
           {clientes.map((c) => (
             <a
@@ -82,36 +86,46 @@ export default function Portfolio() {
               href={`/${c.slug}`}
               target="_blank"
               rel="noopener noreferrer"
+              className="portfolio-bd-card"
               style={{
                 display: "block",
                 background: "white",
-                borderRadius: 16,
-                padding: "36px 28px",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
-                borderTop: `4px solid ${c.cor}`,
+                borderRadius: 14,
+                padding: "32px 28px",
+                border: "1px solid rgba(26,46,74,0.08)",
                 textDecoration: "none",
-                transition: "transform 0.15s, box-shadow 0.15s",
               }}
             >
-              <div style={{ fontSize: 44, marginBottom: 16, lineHeight: 1 }}>
+              <div style={{
+                width: 44,
+                height: 44,
+                borderRadius: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 22,
+                fontSize: 20,
+                background: hexToRgba(c.cor, 0.12),
+              }}>
                 {c.icone}
               </div>
               <h3 style={{
+                fontFamily: "ui-serif, 'Iowan Old Style', 'Palatino Linotype', Georgia, serif",
                 fontSize: 19,
-                fontWeight: 700,
-                color: "#111827",
-                marginBottom: 8,
+                fontWeight: 600,
+                color: "var(--primary-dark)",
+                marginBottom: 10,
               }}>
                 {c.nome}
               </h3>
-              <p style={{ fontSize: 15, color: "#6b7280", lineHeight: 1.6, marginBottom: 20 }}>
+              <p style={{ fontSize: 14.5, color: "#5b6b7c", lineHeight: 1.7, marginBottom: 22 }}>
                 {c.descricao}
               </p>
               <span style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                fontSize: 14,
+                fontSize: 13.5,
                 fontWeight: 600,
                 color: c.cor,
               }}>
@@ -124,6 +138,20 @@ export default function Portfolio() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        .portfolio-bd-card {
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .portfolio-bd-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 28px -16px rgba(26,46,74,0.25);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .portfolio-bd-card { transition: none; }
+          .portfolio-bd-card:hover { transform: none; }
+        }
+      `}</style>
     </section>
   );
 }
