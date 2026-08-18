@@ -102,6 +102,9 @@ Ambos são `.docx` — o tool de leitura do Claude Code não abre binário diret
 NEXT_PUBLIC_SUPABASE_URL=          # obrigatório — mesmo projeto do ecossistema
 NEXT_PUBLIC_SUPABASE_ANON_KEY=     # obrigatório — usado só para ler `categorias` no formulário
 SUPABASE_SERVICE_ROLE_KEY=         # obrigatório — só server-side, usado em app/api/lead/route.js
+NEXT_PUBLIC_BASE_URL=              # obrigatório pra sitemap.js/robots.js — "https://basisdatum.com.br"
+                                    # (configurada na Vercel em 2026-08-18; sem ela cai no fallback
+                                    # http://localhost:3000 mesmo em produção)
 ```
 
 > **Atenção:** essas variáveis precisam ser configuradas manualmente no painel da Vercel (Settings →
@@ -140,14 +143,12 @@ Implementado em 2026-08-17, seguindo exatamente o padrão já usado por `bauru-e
 - **`lib/basePath.js`** exporta `BASE_PATH = "/services"` — fonte única usada tanto no `next.config.ts` (`basePath`/`assetPrefix`) quanto em toda referência a asset/rota interna que o Next não prefixa sozinho (logo/foto de cada `lib/clients/*.js`, os links pro `/orcamento`, o `href` de cada card do `Portfolio.js`, o `fetch` de `/api/lead` em `FormOrcamento.js`, e as URLs absolutas em `robots.js`/`sitemap.js`).
 - **Efeito colateral esperado:** a partir do deploy, a própria URL da Vercel (`site-template-five-phi.vercel.app/`) passa a responder 404 na raiz — só funciona sob `/services` (mesmo comportamento que `bauru-empregos.vercel.app/` e `posto-certo.vercel.app/` já têm hoje). Isso é o padrão do ecossistema, não um bug.
 - **Rewrite no `basis-datum`** (`next.config.ts`, seção "Basis Datum Services") proxeia `basisdatum.com.br/services*` pra essa URL da Vercel — sem precisar de nenhuma configuração de domínio na Vercel em si, o apex já está conectado ao projeto `basis-datum` (mesmo mecanismo dos outros dois apps).
-- **Testado localmente** com `next build && next start`: raiz 404, `/services`, `/services/rs-detail`, `/services/orcamento`, assets (`/services/logo.png`, `/services/_next/static/...`), `/services/api/lead` (POST, validação retornando 400 — não cheguei a inserir um lead de teste) e `/services/sitemap.xml`/`robots.txt` — todos corretos.
-- **Ordem de deploy recomendada:** primeiro `site-template` (pra `/services` passar a existir na URL da Vercel), depois `basis-datum` (cujo rewrite depende disso).
-
-> **Achado à parte, não corrigido ainda:** `robots.js`/`sitemap.js` usam `process.env.NEXT_PUBLIC_BASE_URL`, que **não parece estar configurada na Vercel** (não é uma das 3 env vars documentadas na seção "Variáveis de ambiente"). Sem ela, o sitemap cai no fallback `http://localhost:3000` mesmo em produção — um bug pré-existente, não causado por essa mudança, mas que vale corrigir juntos: configurar `NEXT_PUBLIC_BASE_URL=https://basisdatum.com.br` na Vercel.
+- **Testado localmente e em produção**: raiz 404 (`site-template-five-phi.vercel.app/`), `/services`, `/services/rs-detail`, `/services/orcamento`, assets (`/services/logo.png`, `/services/_next/static/...`), `/services/api/lead` (POST, validação retornando 400) e `/services/sitemap.xml`/`robots.txt` — todos corretos direto em `basisdatum.com.br/services`.
+- **Ordem de deploy usada:** `site-template` primeiro (pra `/services` passar a existir na URL da Vercel), depois `basis-datum` (cujo rewrite depende disso).
+- **`NEXT_PUBLIC_BASE_URL=https://basisdatum.com.br`** configurada na Vercel do site-template em 2026-08-18 (+ redeploy manual, necessário pra env var pegar) — `sitemap.xml`/`robots.txt` confirmados emitindo URLs de produção corretas, não mais `localhost:3000`.
 
 ## Próximos passos
 
-- **Confirmar `NEXT_PUBLIC_BASE_URL` na Vercel** — ver achado acima, pro sitemap/robots funcionarem de verdade em produção.
 - **Upload real de fotos/logo** (Supabase Storage) — adiado deliberadamente, ver seção do formulário acima.
 - **Publicar preços no site** — decisão tomada em 2026-08-17: não publicar por enquanto, os valores serão trabalhados individualmente na proposta apresentada a cada cliente.
 
