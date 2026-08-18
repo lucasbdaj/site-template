@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { BASE_PATH } from "../lib/basePath";
 
 const HORARIO_PADRAO = [
   { dia: "Segunda a Sexta", horario: "" },
@@ -99,7 +100,7 @@ export default function FormOrcamento() {
 
     setEnviando(true);
     try {
-      const res = await fetch("/api/lead", {
+      const res = await fetch(`${BASE_PATH}/api/lead`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

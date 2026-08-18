@@ -1,3 +1,5 @@
+import { BASE_PATH } from "../lib/basePath";
+
 export default function CTAOrcamento() {
   return (
     <section style={{ background: "white", padding: "96px 24px", textAlign: "center" }}>
@@ -27,7 +29,7 @@ export default function CTAOrcamento() {
           Preencha um briefing rápido sobre o seu negócio e te enviamos uma proposta sob medida.
         </p>
         <a
-          href="/orcamento"
+          href={`${BASE_PATH}/orcamento`}
           style={{
             display: "inline-flex", alignItems: "center", gap: 10,
             background: "var(--primary)", color: "white", padding: "16px 34px",

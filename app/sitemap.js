@@ -1,5 +1,6 @@
 import { readdirSync } from "fs";
 import { join } from "path";
+import { BASE_PATH } from "../lib/basePath";
 
 export default function sitemap() {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
@@ -9,7 +10,7 @@ export default function sitemap() {
     .map((f) => f.replace(".js", ""));
 
   return slugs.map((slug) => ({
-    url: `${base}/${slug}`,
+    url: `${base}${BASE_PATH}/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
     priority: 0.8,

@@ -133,10 +133,26 @@ SUPABASE_SERVICE_ROLE_KEY=         # obrigatório — só server-side, usado em 
 - **Fix:** Rota inteira envolvida em `try/catch`, com checagem explícita das env vars antes de usá-las — agora qualquer erro do servidor sempre volta como JSON com mensagem clara.
 - **Lição:** Rotas server-side que dependem de env vars devem sempre checar a presença delas explicitamente e nunca deixar o `createClient` (ou equivalente) lançar sem `try/catch` ao redor — o sintoma no cliente (erro de "conexão") não tem nenhuma relação óbvia com a causa real (env var ausente).
 
+## Domínio próprio (`basisdatum.com.br/services`)
+
+Implementado em 2026-08-17, seguindo exatamente o padrão já usado por `bauru-empregos` e `posto-certo`:
+
+- **`lib/basePath.js`** exporta `BASE_PATH = "/services"` — fonte única usada tanto no `next.config.ts` (`basePath`/`assetPrefix`) quanto em toda referência a asset/rota interna que o Next não prefixa sozinho (logo/foto de cada `lib/clients/*.js`, os links pro `/orcamento`, o `href` de cada card do `Portfolio.js`, o `fetch` de `/api/lead` em `FormOrcamento.js`, e as URLs absolutas em `robots.js`/`sitemap.js`).
+- **Efeito colateral esperado:** a partir do deploy, a própria URL da Vercel (`site-template-five-phi.vercel.app/`) passa a responder 404 na raiz — só funciona sob `/services` (mesmo comportamento que `bauru-empregos.vercel.app/` e `posto-certo.vercel.app/` já têm hoje). Isso é o padrão do ecossistema, não um bug.
+- **Rewrite no `basis-datum`** (`next.config.ts`, seção "Basis Datum Services") proxeia `basisdatum.com.br/services*` pra essa URL da Vercel — sem precisar de nenhuma configuração de domínio na Vercel em si, o apex já está conectado ao projeto `basis-datum` (mesmo mecanismo dos outros dois apps).
+- **Testado localmente** com `next build && next start`: raiz 404, `/services`, `/services/rs-detail`, `/services/orcamento`, assets (`/services/logo.png`, `/services/_next/static/...`), `/services/api/lead` (POST, validação retornando 400 — não cheguei a inserir um lead de teste) e `/services/sitemap.xml`/`robots.txt` — todos corretos.
+- **Ordem de deploy recomendada:** primeiro `site-template` (pra `/services` passar a existir na URL da Vercel), depois `basis-datum` (cujo rewrite depende disso).
+
+> **Achado à parte, não corrigido ainda:** `robots.js`/`sitemap.js` usam `process.env.NEXT_PUBLIC_BASE_URL`, que **não parece estar configurada na Vercel** (não é uma das 3 env vars documentadas na seção "Variáveis de ambiente"). Sem ela, o sitemap cai no fallback `http://localhost:3000` mesmo em produção — um bug pré-existente, não causado por essa mudança, mas que vale corrigir juntos: configurar `NEXT_PUBLIC_BASE_URL=https://basisdatum.com.br` na Vercel.
+
 ## Próximos passos
 
-- **`googleMapsEmbed` vazio nos 6 clientes** em `lib/clients/*.js` — gap identificado numa auditoria anterior, nunca preenchido.
-- **Domínio próprio** — hoje só a URL da Vercel; o plano de negócio prevê `basisdatum.com.br/services` eventualmente (precisaria de rewrite no `next.config.ts` do `basis-datum`, como já existe pra bauru-empregos e posto-certo).
+- **Confirmar `NEXT_PUBLIC_BASE_URL` na Vercel** — ver achado acima, pro sitemap/robots funcionarem de verdade em produção.
 - **Upload real de fotos/logo** (Supabase Storage) — adiado deliberadamente, ver seção do formulário acima.
-- **`bd-crm`**: o campo `plano` do formulário usa o valor `"pacote-presenca"`, que **não existe** na lista oficial de planos do bd-crm (`avulso-lp | avulso-gmn | basico | avancado | personalizado`) — precisa ser adicionado lá pro dropdown do admin reconhecer esse valor corretamente.
-- **Publicar preços no site** — agora que estão consistentes entre plano e contrato (ver "Documentação de negócio"), é uma decisão de negócio em aberto, não mais bloqueada por inconsistência de dados.
+- **Publicar preços no site** — decisão tomada em 2026-08-17: não publicar por enquanto, os valores serão trabalhados individualmente na proposta apresentada a cada cliente.
+
+## Concluído em 2026-08-17 (ajustes pendentes anteriores)
+
+- **`googleMapsEmbed` preenchido em 5 dos 6 clientes** em `lib/clients/*.js` (f2-premium, sb-ar-condicionado, saldao-dos-moveis, rs-detail, funilaria-do-beco) — gerado via URL de embed sem API key (`https://www.google.com/maps?q=<nome + endereço>&output=embed`), a partir do `nome`/`endereco` já cadastrado em cada config. `basis-datum.js` ficou de fora de propósito — a Basis Datum Services não tem endereço físico de loja, só "Bauru, SP", que não renderizaria um pin útil. **Vale conferir visualmente se os pins caíram no lugar certo** — a geração foi por busca textual do Google, não validada com um mapa real.
+- **`bd-crm`**: `"pacote-presenca"` adicionado em todos os lugares que precisavam (`ClienteForm.jsx`, `PropostaForm.jsx` + template de itens, e os 3 displays de label: `clientes/[id]/page.jsx`, `propostas/page.jsx`, `p/[slug]/page.jsx`) — ver `CLAUDE.md` do bd-crm.
+- **Domínio próprio** (`basisdatum.com.br/services`) — ver seção dedicada acima.

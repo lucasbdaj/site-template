@@ -1,3 +1,5 @@
+import { BASE_PATH } from "../lib/basePath";
+
 const clientes = [
   {
     slug: "saldao-dos-moveis",
@@ -83,7 +85,7 @@ export default function Portfolio() {
           {clientes.map((c) => (
             <a
               key={c.slug}
-              href={`/${c.slug}`}
+              href={`${BASE_PATH}/${c.slug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="portfolio-bd-card"

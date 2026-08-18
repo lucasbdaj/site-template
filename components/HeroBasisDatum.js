@@ -1,5 +1,7 @@
 // Hero específico da home da Basis Datum Services — não é o Hero.js genérico
 // usado pelos clientes do template (ver regra em CLAUDE.md).
+import { BASE_PATH } from "../lib/basePath";
+
 export default function HeroBasisDatum({ config }) {
   const ctaHref = config.whatsapp
     ? `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp)}`
@@ -73,7 +75,7 @@ export default function HeroBasisDatum({ config }) {
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
             <a
-              href="/orcamento"
+              href={`${BASE_PATH}/orcamento`}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
