@@ -317,7 +317,7 @@ export default function FormOrcamento() {
           <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
             <input
               type="text" value={novoServico} onChange={e => setNovoServico(e.target.value)}
-              placeholder="Ex: Troca de óleo"
+              placeholder="Ex: Troca de óleo (serviço que o SEU negócio oferece aos clientes)"
               onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); adicionarServico(); } }}
               style={estiloInput}
             />
