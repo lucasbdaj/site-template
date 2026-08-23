@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Configs de ferramentas do ecossistema Node (CommonJS puro, exigem
+    // require()/module.exports — não fazem parte do código do app/lib).
+    "jest.config.js",
+    "jest.setup.js",
+    "playwright.config.js",
   ]),
 ]);
 
