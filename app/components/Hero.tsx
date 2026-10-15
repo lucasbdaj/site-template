@@ -1,75 +1,130 @@
 import type { ClientConfig } from "../../lib/types";
 
 export default function Hero({ config }: { config: ClientConfig }) {
+  const wppMsg = encodeURIComponent(config.mensagemWhatsapp ?? "");
   const ctaHref = config.whatsapp
-    ? `https://wa.me/55${config.whatsapp}?text=${encodeURIComponent(config.mensagemWhatsapp ?? "")}`
+    ? `https://wa.me/55${config.whatsapp}?text=${wppMsg}`
     : config.telefone
       ? `tel:${config.telefone}`
       : "#contato";
-  const { titulo, subtitulo, cta, imagemFundo } = config.hero;
+
+  const {
+    badge,
+    titulo,
+    subtitulo,
+    cta,
+    ctaSecundario,
+    ctaSecundarioHref = "#servicos",
+    imagemFundo,
+    pontosFortes,
+  } = config.hero;
 
   const bgStyle = imagemFundo
     ? {
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(${imagemFundo})`,
+        backgroundImage: `linear-gradient(rgba(10, 10, 12, 0.78), rgba(10, 10, 12, 0.88)), url(${imagemFundo})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }
     : {
-        background: `linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)`,
+        background: `linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 100%)`,
       };
 
   return (
     <section
       style={{
         ...bgStyle,
+        position: "relative",
         minHeight: "calc(100vh - 72px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "80px 24px",
-        textAlign: "center",
+        padding: "80px 24px 96px",
+        color: "white",
       }}
     >
-      <div style={{ maxWidth: 720 }}>
-        <h1 style={{
-          fontSize: "clamp(32px, 5vw, 56px)",
-          fontWeight: 800,
-          color: "white",
-          lineHeight: 1.2,
-          marginBottom: 20,
-          letterSpacing: "-0.02em",
-        }}>
+      <div style={{ maxWidth: 840, margin: "0 auto", textAlign: "center" }}>
+        
+        {/* Badge do Hero */}
+        {badge && (
+          <div style={{ marginBottom: 20 }}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(255, 255, 255, 0.12)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "#f3f4f6",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                padding: "6px 16px",
+                borderRadius: 999,
+              }}
+            >
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e" }} />
+              {badge}
+            </span>
+          </div>
+        )}
+
+        {/* Título Principal */}
+        <h1
+          style={{
+            fontSize: "clamp(32px, 5.2vw, 54px)",
+            fontWeight: 800,
+            lineHeight: 1.15,
+            letterSpacing: "-0.03em",
+            marginBottom: 22,
+            textShadow: "0 2px 20px rgba(0,0,0,0.35)",
+          }}
+        >
           {titulo}
         </h1>
 
-        <p style={{
-          fontSize: "clamp(16px, 2vw, 20px)",
-          color: "rgba(255,255,255,0.85)",
-          marginBottom: 40,
-          maxWidth: 560,
-          margin: "0 auto 40px",
-          lineHeight: 1.7,
-        }}>
+        {/* Subtítulo */}
+        <p
+          style={{
+            fontSize: "clamp(16px, 2.2vw, 20px)",
+            color: "rgba(255, 255, 255, 0.88)",
+            lineHeight: 1.65,
+            maxWidth: 680,
+            margin: "0 auto 36px",
+          }}
+        >
           {subtitulo}
         </p>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+        {/* Botões de Ação */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 14,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 36,
+          }}
+        >
           <a
             href={ctaHref}
-            target="_self"
+            target="_blank"
             rel="noopener noreferrer"
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: 10,
-              background: "white",
-              color: "var(--primary)",
+              background: "#25D366",
+              color: "white",
               padding: "16px 32px",
               borderRadius: 12,
               textDecoration: "none",
-              fontSize: 17,
+              fontSize: 16,
               fontWeight: 700,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              boxShadow: "0 10px 25px rgba(37, 211, 102, 0.35)",
+              transition: "transform 0.15s ease",
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -78,26 +133,59 @@ export default function Hero({ config }: { config: ClientConfig }) {
             {cta}
           </a>
 
-          <a
-            href="#servicos"
+          {ctaSecundario && (
+            <a
+              href={ctaSecundarioHref}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                background: "rgba(255, 255, 255, 0.1)",
+                color: "white",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
+                backdropFilter: "blur(8px)",
+                padding: "16px 28px",
+                borderRadius: 12,
+                textDecoration: "none",
+                fontSize: 16,
+                fontWeight: 600,
+              }}
+            >
+              {ctaSecundario}
+            </a>
+          )}
+        </div>
+
+        {/* Pontos fortes em destaque */}
+        {pontosFortes && pontosFortes.length > 0 && (
+          <div
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "rgba(255,255,255,0.15)",
-              color: "white",
-              padding: "16px 28px",
-              borderRadius: 12,
-              textDecoration: "none",
-              fontSize: 17,
-              fontWeight: 600,
-              border: "2px solid rgba(255,255,255,0.4)",
-              backdropFilter: "blur(4px)",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 16,
+              justifyContent: "center",
+              marginTop: 16,
+              borderTop: "1px solid rgba(255, 255, 255, 0.12)",
+              paddingTop: 24,
             }}
           >
-            Ver serviços
-          </a>
-        </div>
+            {pontosFortes.map((ponto, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontSize: 14,
+                  color: "rgba(255, 255, 255, 0.82)",
+                }}
+              >
+                <span style={{ color: "#22c55e", fontWeight: 800 }}>✓</span>
+                {ponto}
+              </div>
+            ))}
+          </div>
+        )}
+
       </div>
     </section>
   );

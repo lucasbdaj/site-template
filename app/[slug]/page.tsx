@@ -24,20 +24,23 @@ function buildJsonLd(config: ClientConfig) {
       ? `+55${config.telefone}`
       : undefined;
 
-  const sameAs = [config.instagram, config.facebook, config.linkedin, config.site]
-    .filter(Boolean);
+  const sameAs = [config.instagram, config.facebook, config.linkedin, config.site].filter(Boolean);
 
   const ld: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": config.nome,
-    "description": config.hero?.subtitulo ?? config.slogan ?? "",
-    "address": {
+    "@type": "AutoRepair", // Tipagem mais específica que LocalBusiness para oficinas
+    name: config.nome,
+    description: config.hero?.subtitulo ?? config.slogan ?? "",
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": streetAddress,
-      "addressLocality": city,
-      "addressRegion": state,
-      "addressCountry": "BR",
+      streetAddress: streetAddress,
+      addressLocality: city,
+      addressRegion: state,
+      addressCountry: "BR",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      addressCountry: "BR",
     },
   };
 
@@ -50,14 +53,21 @@ function buildJsonLd(config: ClientConfig) {
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const { CONFIG } = await import(`../../lib/clients/${slug}`) as { CONFIG: ClientConfig };
+    const { CONFIG } = (await import(`../../lib/clients/${slug}`)) as { CONFIG: ClientConfig };
+    const title = `${CONFIG.nome} | ${CONFIG.slogan ?? "Oficina Especializada"}`;
+    const description = CONFIG.hero.subtitulo;
+
     return {
-      title: CONFIG.nome,
-      description: CONFIG.hero.subtitulo,
-      openGraph: { title: CONFIG.nome, description: CONFIG.hero.subtitulo, type: "website" },
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        type: "website",
+      },
     };
   } catch {
-    return { title: "Não encontrado" };
+    return { title: "Página não encontrada" };
   }
 }
 
@@ -65,7 +75,7 @@ export default async function ClientePage({ params }: PageParams) {
   const { slug } = await params;
   let CONFIG: ClientConfig;
   try {
-    ({ CONFIG } = await import(`../../lib/clients/${slug}`) as { CONFIG: ClientConfig });
+    ({ CONFIG } = (await import(`../../lib/clients/${slug}`)) as { CONFIG: ClientConfig });
   } catch {
     notFound();
   }
@@ -88,4 +98,4 @@ export default async function ClientePage({ params }: PageParams) {
       <Footer config={CONFIG} />
     </SiteShell>
   );
-}
+} 
