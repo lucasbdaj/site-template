@@ -10,34 +10,6 @@ interface ClienteCase {
 
 const clientes: ClienteCase[] = [
   {
-    slug: "saldao-dos-moveis",
-    nome: "Saldão dos Móveis",
-    descricao: "Loja de móveis e eletrodomésticos novos e semi novos em Bauru.",
-    cor: "#1E4ED8",
-    icone: "🪑",
-  },
-  {
-    slug: "sb-ar-condicionado",
-    nome: "SB Ar Condicionado",
-    descricao: "Especialistas em ar condicionado automotivo e direção hidráulica em Bauru.",
-    cor: "#4D1817",
-    icone: "❄️",
-  },
-  {
-    slug: "rs-detail",
-    nome: "RS Detail",
-    descricao: "Estética automotiva profissional em Bauru. Polimento, higienização e proteção.",
-    cor: "#A32121",
-    icone: "✨",
-  },
-  {
-    slug: "f2-premium",
-    nome: "F2 Premium Autopeças",
-    descricao: "Especialistas em autopeças para nacionais e importados. Mais de 10 anos em Bauru.",
-    cor: "#F31621",
-    icone: "🏅",
-  },
-  {
     slug: "funilaria-do-beco",
     nome: "Funilaria do Beco",
     descricao: "Funilaria e pintura automotiva profissional no Parque Santa Edwiges, Bauru.",
